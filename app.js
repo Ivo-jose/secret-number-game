@@ -1,5 +1,5 @@
 let listOfDrawnNumbers = [];
-const maxNumber = 10;
+const maxNumber = 20;
 let attempts = 0;
 /*
     Quando chamada cria uma referência elemento HTML e 
