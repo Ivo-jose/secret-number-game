@@ -1,6 +1,11 @@
 let listOfDrawnNumbers = [];
 const maxNumber = 20;
 let attempts = 0;
+
+readText = (text) => {
+    responsiveVoice.speak(text, 'Brazilian Portuguese Female',{rate:1.2});
+}
+
 /*
     Quando chamada cria uma referência elemento HTML e 
     se text não for vazia acrescenta o valor de text dentro do elemento HTML.
@@ -8,25 +13,27 @@ let attempts = 0;
 createReferenceForElement = (tag,text) => {
     let aux = document.querySelector(tag);
     if(text != undefined) aux.innerHTML = text;
-    responsiveVoice.speak(text, 'Brazilian Portuguese Female',{rate:1.2});
     return aux;
 }
 
+/* Função que é executada qdo o jogo é iniciado  ou um novo jogo */
 showInitialMessage = () => {
     // Chamando a função que gera números aleatórios
     secretNumber = toGenerateRandonNumber();
     // Chamando a função que irá manipular o DOM
-    createReferenceForElement('h1', 'Jogo do número secreto');
-    createReferenceForElement('p',`Escolha um número entre 1 e ${maxNumber}`);
+    let title = createReferenceForElement('h1', 'Jogo do número secreto');
+    let paragraph = createReferenceForElement('p',`Escolha um número entre 1 e ${maxNumber}`);
+    // Chamando a função respopnsável pela acessibilidade de voz
+    readText(`${title.innerText} ${paragraph.innerText}`);
 }
 
-//Quando chamada atualiza a página
+//Quando chamada limpa o input
 cleanScreen = () => createReferenceForElement('input').value = '';
 
 //Verificar na lista
 haveOnTheList = (list, number) => list.includes(number); 
 
-// Quando chamada gera um número aleatório que como limite e inclusivo o maxNumber
+/* Função quando chamada, gera um número aleatório e verfica se ja foi sorteado  */
 toGenerateRandonNumber = () => {
    let chosenNumber;
    //Verfica se a lista atingiu o limite máximo
@@ -57,23 +64,26 @@ const field = createReferenceForElement('input');
 // Deixando o valor máximo do input dinâmico
 field.max = maxNumber;
 
-// Executada quando o botão chitar e clicado
+// Executada quando o botão chutar e clicado e verifica se ganhou ou não
 checkAttempt = () => {
     attempts++;
     if(secretNumber === parseInt(field.value)){
-        createReferenceForElement('h1', 'Acertou!');
+        let title = createReferenceForElement('h1', 'Acertou!');
         let msg = attempts > 1 ? 'tentativas' : 'tentativa';
-        createReferenceForElement('p',`Você descobriu o número secreto com ${attempts} ${msg}!`);
+        let paragraph = createReferenceForElement('p',`Você descobriu o número secreto com ${attempts} ${msg}!`);
+        // Chamando a função respopnsável pela acessibilidade de voz
+        readText(`${title.innerText} ${paragraph.innerText}`);
         // Chamndo a função que manipula o DOM e armazenando no escopo global
         const btnNewGame = createReferenceForElement('#restart');
         // Ativando o botão de novo jogo
         btnNewGame.removeAttribute('disabled');
         // Depois de ativo adicionado o evento que chama a função que atualiza a página
-        btnNewGame.addEventListener('click', startNewGame)
+        btnNewGame.addEventListener('click', startNewGame);
     }
     else {
         let guessGuidance = (secretNumber > parseInt(field.value) ? 'O número secreto é maior' : 'O número secreto é menor');
-        createReferenceForElement('p', guessGuidance);
+        let paragraph = createReferenceForElement('p', guessGuidance);
+        readText(paragraph.innerText);
         cleanScreen();
     } 
 }  
